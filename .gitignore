@@ -32,3 +32,6 @@
 
 # Ignore gems.
 /vendor/
+
+# Ignore tags.
+tags

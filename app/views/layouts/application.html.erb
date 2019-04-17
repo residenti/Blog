@@ -11,9 +11,23 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= favicon_link_tag 'favicon.ico' %>
     <%= favicon_link_tag('apple-touch-icon-180x180.png', { rel: 'apple-touch-icon', sizes: '180x180', type: 'image/png' }) %>
+
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
   </head>
 
   <body>
+    <div class="site-header">
+      <div class="wrap">
+        <%= link_to "residenti ぶろぐ", articles_path, class: "site-title" %>
+        <%= link_to "https://twitter.com/v_residenti", class: "sns-icon", target: "_blank", rel: "noopener" do %>
+          <i class="fab fa-twitter"></i>
+        <% end %>
+        <%= link_to "https://github.com/residenti", class: "sns-icon", target: "_blank", rel: "noopener" do %>
+          <i class="fab fa-github"></i>
+        <% end %>
+      </div>
+    </div>
+
     <%= yield %>
   </body>
 </html>

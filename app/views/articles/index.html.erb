@@ -1,10 +1,14 @@
-<p id="notice"><%= notice %></p>
+<div class="site-content">
+  <div class="wrap">
+    <p id="notice"><%= notice %></p>
 
-<% @articles.each do |article| %>
-  <ul>
-    <li class="article-link">
-      <%= link_to article.title, article %>
-      <span class="article-date">post: <%= article.created_at =%>, update:  <%= article.updated_at =%></span>
-    </li>
-  </ul>
-<% end %>
+    <ul class="articles">
+      <% @articles.each do |article| %>
+        <li class="article-link">
+          <%= link_to article.title, article %>
+          <span class="article-date">post: <%= article.created_at =%>, update:  <%= article.updated_at =%></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

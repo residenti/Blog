@@ -1,4 +1,5 @@
 module ArticlesHelper
+  require './lib/blog_render.rb'
 
   def markdown(text)
     options = {
@@ -17,7 +18,7 @@ module ArticlesHelper
       tables: true
     }
 
-    renderer = Redcarpet::Render::HTML.new(options)
+    renderer = BlogRender.new(options)
     @markdown = Redcarpet::Markdown.new(renderer, extensions)
     @markdown.render(text).html_safe
   end

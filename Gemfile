@@ -38,6 +38,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # The safe Markdown parser, reloaded.
 gem 'redcarpet'
+# A pure-ruby code highlighter that is compatible with pygments http://rouge.jneen.net .
+gem 'rouge'
 
 # database.
 gem 'mysql2'

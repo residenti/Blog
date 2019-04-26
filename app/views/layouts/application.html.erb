@@ -25,12 +25,9 @@
         <%= link_to "https://github.com/residenti", class: "sns-icon", target: "_blank", rel: "noopener" do %>
           <i class="fab fa-github"></i>
         <% end %>
+        <%= link_to '新規作成', new_article_path if current_user.admin? %>
       </div>
     </div>
-
-    <p id="notice"><%= notice %></p>
-    <p id="alert"><%= alert %></p>
-
     <%= yield %>
   </body>
 </html>

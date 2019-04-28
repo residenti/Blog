@@ -10,13 +10,13 @@ default: &default
   socket: '/tmp/mysql.sock'
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-  username: root
-  password: rintaro123
-  host: localhost
 
 development:
   <<: *default
   database: blog_app_development
+  username: root
+  password: rintaro123
+  host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -24,7 +24,13 @@ development:
 test:
   <<: *default
   database: blog_app_test
+  username: root
+  password: rintaro123
+  host: localhost
 
 production:
   <<: *default
-  database: blog_app_production
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>

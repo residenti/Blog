@@ -35,3 +35,6 @@
 
 # Ignore tags.
 tags
+
+# Ignore environment variable.
+.env.production

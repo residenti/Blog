@@ -1,6 +1,3 @@
 # Blog
 
-## TODO
-
-- index asc
-- remove +0900
+[MyPage](https://github.com/residenti/MyPage)を移行した。

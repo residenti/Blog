@@ -38,6 +38,3 @@ tags
 
 # Ignore environment variable.
 .env.production
-
-# Ignore article manuscript.
-manuscript/

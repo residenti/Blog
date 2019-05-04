@@ -36,8 +36,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # The safe Markdown parser, reloaded.
 gem 'redcarpet'
-# Fast and easy syntax highlighting for selected languages, written in Ruby.
-gem 'coderay'
+# A pure-ruby code highlighter that is compatible with pygments http://rouge.jneen.net .
+gem 'rouge'
 
 # database.
 gem 'mysql2'

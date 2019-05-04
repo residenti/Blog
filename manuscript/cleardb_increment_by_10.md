@@ -12,7 +12,7 @@ post: 2019/05/02, update: 2019/05/02
 
 ちなみに、DBのidの増加値と初期値を調べたい時は次のコマンドを使う。
 
-```
+```sql
 mysql> SHOW variables LIKE "%auto_increment%";
 
 +--------------------------+-------+

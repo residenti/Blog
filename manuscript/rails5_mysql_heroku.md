@@ -99,7 +99,7 @@ TZ:                       Asia/Tokyo
 productionの設定を環境変数を使ったものに修正する。
 ＊自分の場合は、ソースコードをGitHubに上げていてpasswordなど他人に見られるとセキュリティ的にアウトなので、[`dotenv-rails`](https://github.com/bkeepers/dotenv)を使って環境変数を管理した。このGemを調べてたらちらほらデメリットを見かけたが開発してるの自分だけなので関係なさそうに見えた。
 
-``` config/database.yml
+```yml
 production:
   adapter: mysql2
   encoding: utf8

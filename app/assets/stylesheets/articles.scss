@@ -146,6 +146,34 @@ blockquote cite {
   }
 }
 
+// 記事フォーム画面
+#form_container {
+  display: grid;
+  grid-template-rows: 50px 500px 100px;
+  grid-template-columns: 100% ;
+  grid-template-areas:
+  "titleField"
+  "bodyField"
+  "actionField";
+}
+
+#article_title {
+  grid-area: titleField;
+  border: 1px solid #ddd;
+  font-size: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+}
+
+#article_body {
+  grid-area: bodyField;
+}
+
+#action-field {
+  grid-area: actionField;
+}
+
 // ハイライト
 .highlight {
   border-radius: 5px;

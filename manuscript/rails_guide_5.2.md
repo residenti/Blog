@@ -50,9 +50,9 @@ Active Record に搭載されている機能の中でも特に重要なもの。
 Active Recordには、DBのテーブルで使うカラム名にもルールがある。
 例えば、外部キーなら対応するテーブル名の単数形\_id、主キーid、レコード作成/更新時はcreated\_id/updated\_atだったり。
 
-実はその他にも色々と便利そうなのがあったので載せとく。
+実はその他にもすごい便利そうなのがあったので載せとく。 単一継承テーブル(STI)なんて全然知らなかったけどすごい便利そう。
 
-> - lock_version: モデルに optimistic locking を追加します
-> - type: モデルで Single Table Inheritance を使う場合に指定します
-> - 関連付け名_type: ポリモーフィック関連付けの種類を保存します
-> - テーブル名_count: 関連付けにおいて、所属しているオブジェクトの数をキャッ シュするのに使われます。たとえば、Article クラスに comments_count という カラムがあり、そこに Comment のインスタンスが多数あると、ポストごとのコメ ント数がここにキャッシュされます。
+> - lock\_version: モデルに [optimistic locking](https://ja.wikipedia.org/wiki/%E6%A5%BD%E8%A6%B3%E7%9A%84%E4%B8%A6%E8%A1%8C%E6%80%A7%E5%88%B6%E5%BE%A1) を追加します
+> - type: モデルで[Single Table Inheritance](https://ruby-rails.hatenadiary.com/entry/20141206/1417839458)を使う場合に指定します
+> - 関連付け名\_type: ポリモーフィック関連付けの種類を保存します
+> - テーブル名\_count: 関連付けにおいて、所属しているオブジェクトの数をキャッ シュするのに使われます。たとえば、Article クラスに comments_count という カラムがあり、そこに Comment のインスタンスが多数あると、ポストごとのコメ ント数がここにキャッシュされます。

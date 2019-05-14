@@ -172,6 +172,14 @@ blockquote cite {
 
 #action-field {
   grid-area: actionField;
+  padding-top: 10px;
+}
+
+#post_button {
+  width: 100%;
+  padding:20px;
+  background:#9b4dca;
+  color:#fff;
 }
 
 // ハイライト

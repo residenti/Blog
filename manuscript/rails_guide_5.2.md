@@ -31,7 +31,9 @@ end
 
 ## 第2章 Active Record の基礎
 
-### 2.1.3 ORM フレームワークとしての Active Record
+### 2.1 Active Record について
+
+#### 2.1.3 ORM フレームワークとしての Active Record
 
 Active Record に搭載されている機能の中でも特に重要なもの。
 
@@ -49,10 +51,101 @@ Active Record に搭載されている機能の中でも特に重要なもの。
 
 Active Recordには、DBのテーブルで使うカラム名にもルールがある。
 例えば、外部キーなら対応するテーブル名の単数形\_id、主キーid、レコード作成/更新時はcreated\_id/updated\_atだったり。
-
-実はその他にもすごい便利そうなのがあったので載せとく。 単一継承テーブル(STI)なんて全然知らなかったけどすごい便利そう。
+ここら辺よく見かけるので、馴染みがあったが、実はその他にも知っておくと便利そうなのがあったので載せとく。単一継承テーブル(STI)なんて全然知らなかったけど便利そう。
 
 > - lock\_version: モデルに [optimistic locking](https://ja.wikipedia.org/wiki/%E6%A5%BD%E8%A6%B3%E7%9A%84%E4%B8%A6%E8%A1%8C%E6%80%A7%E5%88%B6%E5%BE%A1) を追加します
 > - type: モデルで[Single Table Inheritance](https://ruby-rails.hatenadiary.com/entry/20141206/1417839458)を使う場合に指定します
 > - 関連付け名\_type: ポリモーフィック関連付けの種類を保存します
 > - テーブル名\_count: 関連付けにおいて、所属しているオブジェクトの数をキャッ シュするのに使われます。たとえば、Article クラスに comments_count という カラムがあり、そこに Comment のインスタンスが多数あると、ポストごとのコメ ント数がここにキャッシュされます。
+
+注意点としては、これらの予約されたカラム名は特別な理由がない限りは利用を避けること。
+
+### 2.4 命名ルールを上書きする
+
+テーブルの主キーに使われているカラム名を上書きしたい時は、`ActiveRecord::Base.primary_key=`メソッドを使う。
+
+```ruby
+class Product < ApplicationRecord
+  self.primary_key = "product_id"
+end
+```
+
+### 2.5 CRUD: データの読み書き
+
+#### 2.5.1 Create
+
+*Question*
+
+どうゆうこと？利点は？
+
+> `create`や`new`にブロックを渡すと、そのブロックで初期化された新しいオブジェクトが`yield`されます。
+
+```ruby
+user = User.new do |u|
+  u.name = "David"
+  u.occupation = "Code Artist"
+end
+```
+
+#### 2.5.3 Update
+
+[`update_all`](https://apidock.com/rails/v4.0.2/ActiveRecord/Relation/update_all)クラスメソッドが紹介されていて、最近これを使ってハマったことがあったので注意として書いとく。
+
+*注意点*
+
+1. `updated_at`カラムが更新されないので注意。
+2. `ActiveRecord::Relation`のクラスメソッドなのでArrayには使えない(当たり前なんだけど)。
+
+## 第3章 Active Record マイグレーション
+
+### 3.2 マイグレーションを作成する
+
+#### 3.2.1 単独のマイグレーションを作成する
+
+**マイグレーションファイルの実行順序**
+
+下記はRailsのマイグレーションの実行順序について、知っておかないと地味にハマりそうだったのでそのまま抜き出しとく。
+
+> Railsではマイグレーションの実行順序をファイル名のタイムスタンプで決定します。
+
+まぁ、`generate`コマンドでマイグレーションファイルを生成してればいいんだけど。こういう仕様だよって言うのは把握しといて損はないかな。
+
+**テーブル結合を生成するジェネレーターを作成する**
+
+名前に`JoinTable`を含めることで、テーブル結合を生成するジェネレーターも作成できる。
+
+```ruby
+$ bin/rails g migration CreateJoinTableCustomerProduct customer product
+```
+
+生成されるマイグレーションファイル。
+
+```ruby
+class CreateJoinTableCustomerProduct < ActiveRecord::Migration[5.0]
+  def change
+    create_join_table :customers, :product do |t|
+      # t.index [:customer_id, :product_id]
+      # t.index [:product_id, :customer_id]
+    end
+  end
+end
+```
+
+*Question*
+
+マイグレーションファイルの名前にJoinTableを含めることで、テーブル結合を生成するジェネレーターが作成できるのを今さっきrailsガイドで読んで、よく分からないからググってみたものの 、それらしき記事が中々見つからないってことは、余り使われることがないからなのかな。都度includeやらをすれば
+
+#### 3.2.3 修飾子を渡す
+
+```ruby
+$ bin/ rails generate migration AddDetailsToProducts 'price : decimal {5 ,2} ' supplier : references { polymorphic }
+```
+
+```ruby
+class AddDetailsToProducts < ActiveRecord :: Migration [5.0]
+  def change
+    add_column : products , :price , : decimal , precision : 5, scale : 2 
+    add_reference : products , : supplier , polymorphic : true
+  end
+end
+```

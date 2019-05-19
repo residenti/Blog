@@ -5,7 +5,7 @@
 
       <header class="article-header">
         <h1 class="article-title"><%= @article.title %></h1>
-        <p class="article-date">post: <%= @article.created_at.to_s(:ymd) =%>, update: <%= @article.updated_at.to_s(:ymd) =%></p>
+        <p class="article-date">更新日: <%= @article.updated_at.to_s(:ymd) =%>, 作成日: <%= @article.created_at.to_s(:ymd) =%></p>
       </header>
       <article class="article-content">
         <%= markdown(@article.body) %>

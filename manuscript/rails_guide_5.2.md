@@ -58,7 +58,9 @@ Active Recordには、DBのテーブルで使うカラム名にもルールが�
 > - 関連付け名\_type: ポリモーフィック関連付けの種類を保存します
 > - テーブル名\_count: 関連付けにおいて、所属しているオブジェクトの数をキャッ シュするのに使われます。たとえば、Article クラスに comments_count という カラムがあり、そこに Comment のインスタンスが多数あると、ポストごとのコメ ント数がここにキャッシュされます。
 
-注意点としては、これらの予約されたカラム名は特別な理由がない限りは利用を避けること。
+注意
+
+1. これらの予約されたカラム名は特別な理由がない限りは利用を避ける
 
 ### 2.4 命名ルールを上書きする
 
@@ -148,4 +150,78 @@ class AddDetailsToProducts < ActiveRecord :: Migration [5.0]
     add_reference : products , : supplier , polymorphic : true
   end
 end
+```
+
+### 3.3 マイグレーションを自作する
+
+#### 3.3.1 テーブルを作成する
+
+**特定のデータベースで使われるオプションを指定する**
+
+特定のデータベースで使われるオプションが必要な場合は、`:options`オプションに続けてSQLフラグメントを記述する。
+例えば、次のマイグレーションでは、テーブルを生成するSQLステートメントに`ENGINE=BLACKHOLE`を指定している。
+
+```ruby
+create_table :products, options: "engine=blackhole" do |t|
+  t.string :name, null: false
+end
+```
+
+**テーブル説明文を書いてデータベース自身に保存する**
+
+`:comment`オプションを使うと、テーブルの説明文を書いてデータベース自身に保存することができる。
+この機能は[Rails5から標準機能として装備](https://techracho.bpsinc.jp/hachi8833/2017_02_23/36083)されたもので、現時点では、MySQLとPostgreSQLアダプタのみがコメント機能をサポートしているみたい。
+ドキュメント生成されてデータモデルを理解し易くなっていいな。データベース数が多い大規模なアプリケーションなら尚更便利そう。
+
+マイグレーションは次のように、各カラムに対して`comment:`オプションでコメントを付与してあげる。
+
+```ruby
+class CreatePatients < ActiveRecord::Migration[5.0]
+  def change
+    create_table :patients do |t|
+      t.string :name, comment: "患者のニックネーム"
+      t.string :first_name, comment: "患者の下の名前"
+      t.string :last_name, comment: "患者の名字"
+
+      t.timestamps
+    end
+  end
+end
+```
+
+これを`rake db:migrate`で実行すると、`db/schema.rb`に次のようにコメントが反映される。
+
+```ruby
+create_table "patients", force: :cascade do |t|
+  t.string "name",                      comment: "患者の名前"
+  t.string "first_name",                comment: "患者の下の名前"
+  t.string "last_name",                 comment: "患者の名字"
+  t.datetime "created_at", null: false
+  t.datetime "updated_at", null: false
+end
+```
+
+また、登録したコメントは[PGAdmin](https://www.pgadmin.org/)や[MySQL WorkBench](https://www.mysql.com/jp/products/workbench/)などのGUIツールでも確認できる。
+
+#### 3.3.4 カラムを変更する
+
+*注意*
+
+1. `change_column`コマンドはロールバックされない(可逆的でない)
+
+次の例は、productsテーブルのpart_numberカラムの種類を:textフィールドに変更している。
+
+```ruby
+change_column :products , :part_number , :text
+```
+
+`change_column`の他に`change_column_null`、`change_column_default`メソッドがあり、それぞれnot null制約を変更したりデフォルト値を指定したりするのに使われる。
+下のマイグレーションはproductsテーブルの:nameフィールドにNOT NULL制約を設定し、:approvedフィールドのデフォルト値をtrueからfalseに変更する。
+
+```ruby
+change_column_null :products, :name, false
+change_column_default :products, :approved, from: true, to: false
+
+# 次の書き方だとマイグレーションを可逆的にできる
+# change_column_default :products, :approved, false
 ```

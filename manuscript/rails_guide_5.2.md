@@ -225,3 +225,11 @@ change_column_default :products, :approved, from: true, to: false
 # 次の書き方だとマイグレーションを可逆的にできる
 # change_column_default :products, :approved, false
 ```
+
+#### 3.3.7 ヘルパーの機能だけでは足りない場合
+
+Active Record が提供するヘルパーの機能だけでは不十分な場合には、`execute`メソッドで任意のSQLを実行することができる。
+
+```ruby
+Product.connection.execute (" UPDATE products SET price = 'free ' WHERE 1=1")
+```

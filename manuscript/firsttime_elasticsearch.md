@@ -155,10 +155,110 @@ $ curl http://localhost:9200/
 ```
 
 `elasticsearch`コマンドがインストールできたので、次にKibanaを[ダウンロード](https://www.elastic.co/jp/downloads/kibana)して起動する。
-めっちゃエラー出た笑 引越しの準備しないといけないので一旦ここまで。
+バージョン7.1.0をインストールした。
 
 ```
 $ cd path_to_kibana-dir
 $ ./bin/kibana
+
+{大量のログ}
+log   [10:21:30.117] [error][status][plugin:xpack_main@7.1.0] Status changed from yellow to red - This version of Kibana requires Elasticsearch v7.1.0 on all nodes. I found the following incompatible nodes in your cluster: v6.8.0 @ 127.0.0.1:9200 (127.0.0.1)
+```
+
+どうやらバージョンが7.1.0のElasticsearchが必要らしかったので、`brew`でこのバージョンのElasticsearchをインストールしようと試みたがうまくいかずハマりそうだったので、`brew`を止めて`wget`でzipをダウンロードして`tar`で解凍して使うようにした。
+
+まずは`brew`でインストールしたElasticsearchをアンインストールしとく。
+
+```
+$ brew uninstall elasticsearch
+Uninstalling /usr/local/Cellar/elasticsearch/6.8.0... (133 files, 103.1MB)
+```
+
+elasticsearchの7.0.0をインストール。
+
+```
+$ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.0.0-darwin-x86_64.tar.gz
+--2019-05-26 20:39:16--  https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.0.0-darwin-x86_64.tar.gz
+artifacts.elastic.co (artifacts.elastic.co) をDNSに問いあわせています... 151.101.110.222
+artifacts.elastic.co (artifacts.elastic.co)|151.101.110.222|:443 に接続しています... 接続しました。
+HTTP による接続要求を送信しました、応答を待っています... 200 OK
+長さ: 339093778 (323M) [application/x-gzip]
+`elasticsearch-7.0.0-darwin-x86_64.tar.gz' に保存中
+
+elasticsearch-7.0.0-darwin-x86_64.tar.gz     100%[============================================================================================>] 323.38M  3.71MB/s 時間 80s
+
+2019-05-26 20:40:37 (4.05 MB/s) - `elasticsearch-7.0.0-darwin-x86_64.tar.gz' へ保存完了 [339093778/339093778]
+
+$ tar -xzf elasticsearch-7.0.0-darwin-x86_64.tar.gz
+```
+
+日本語検索プラグインkuromojiもインストールする。
+
+```
+$ cd elasticsearch-7.0.0
+$ bin/elasticsearch-plugin install analysis-kuromoji
+-> Downloading analysis-kuromoji from elastic
+[=================================================] 100%  
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.bouncycastle.jcajce.provider.drbg.DRBG (file:/Users/NRintaro/Documents/Program/environment/Private/Elasticsearch/elasticsearch-7.0.0/lib/tools/plugin-cli/bcprov-jdk15on-1.61.jar) to constructor sun.security.provider.Sun()
+WARNING: Please consider reporting this to the maintainers of org.bouncycastle.jcajce.provider.drbg.DRBG
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+-> Installed analysis-kuromoji
+```
+
+elasticsearchを起動する。
+
+```
+$ bin/elasticsearch
 {大量のログ}
 ```
+
+動作確認でhttp://localhost:9200/へ接続する。
+
+```
+$ curl http://localhost:9200/
+{
+  "name" : "lime.local",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "eBVO6KLfRnea3Gn0hxAmeg",
+  "version" : {
+    "number" : "7.0.0",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "b7e28a7",
+    "build_date" : "2019-04-05T22:55:32.697037Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.0.0",
+    "minimum_wire_compatibility_version" : "6.7.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
+kibanaの7.0.0をインストール。
+
+```
+$ wget https://artifacts.elastic.co/downloads/kibana/kibana-7.0.0-darwin-x86_64.tar.gz
+--2019-05-26 20:35:59--  https://artifacts.elastic.co/downloads/kibana/kibana-7.0.0-darwin-x86_64.tar.gz
+artifacts.elastic.co (artifacts.elastic.co) をDNSに問いあわせています... 151.101.110.222
+artifacts.elastic.co (artifacts.elastic.co)|151.101.110.222|:443 に接続しています... 接続しました。
+HTTP による接続要求を送信しました、応答を待っています... 200 OK
+長さ: 172021559 (164M) [application/x-gzip]
+`kibana-7.0.0-darwin-x86_64.tar.gz' に保存中
+
+kibana-7.0.0-darwin-x86_64.tar.gz            100%[============================================================================================>] 164.05M  4.38MB/s 時間 42s      
+
+2019-05-26 20:36:42 (3.89 MB/s) - `kibana-7.0.0-darwin-x86_64.tar.gz' へ保存完了 [172021559/172021559]
+
+$ tar -xzf kibana-7.0.0-darwin-x86_64.tar.gz
+```
+
+elasticsearchを起動する。
+
+```
+$ bin/kibana
+```
+
+ブラウザからhttp://localhost:5601/へ接続し、kibanaの管理画面が表示されたので大丈夫そう。

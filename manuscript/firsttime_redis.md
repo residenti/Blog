@@ -161,15 +161,17 @@ $ bundle install --path vendor/bundle
 $ bundle exec rails new .
 ```
 
-サンプル用のRailsアプリが作成できので、サイトを参考にRedisをインストールする。
+サンプル用のRailsアプリが作成できので、[こちら](https://qiita.com/takanori_yamashita/items/5d666e943a3368848da9#rails%E3%82%A2%E3%83%97%E3%83%AA%E3%81%ABredis%E3%82%92%E5%B0%8E%E5%85%A5)を参考にRedisをインストールする。
 
-todo redis-railsとはを調べる
+1.Gemfileに必要なgemを追記してインストールする
 
 ```ruby
 # Gemfile
 
 gem 'redis-rails'
 ```
+
+2.development.rbに設定を追記する(下記のコードは上記のサイトから引用したもの)
 
 ```ruby
 # config/environments/development.rb
@@ -180,3 +182,74 @@ Rails.application.configure do
   config.session_store :redis_store, servers: 'redis://localhost:6379/0', expire_in: 1.minutes
 end
 ```
+
+### Redisにセッションを保存する
+
+1.コントローラーを作成する。
+
+```ruby
+$ bundle exec rails g controller redis
+```
+2.生成されたredis_controller.rbを次のように書き換える。
+
+```ruby
+# app/controllers/redis_controller.rb
+class RedisController < ApplicationController
+  require 'redis'
+
+  def test
+    # Rails4の場合は render text: 'テスト' かな?
+    render plain: 'テスト'
+    Redis.current.set("hoge", "fuga")
+    # これってchromeの開発者ツールで確認できる？
+    session[:user_email] = 'test@a.a'
+  end
+end
+```
+
+3.ルーティングを作成する
+
+```ruby
+# config/route.rb
+Rails.application.routes.draw do
+  match ':controller(/:action(/:id))', via: [ :get, :post, :patch ]
+end
+```
+
+4.Redisの接続情報を追記する
+
+```ruby
+# config/inisitalizers/redis.rb
+require 'redis'
+Redis.current = Redis.new(:host => '127.0.0.1', :port => 6379)
+```
+
+これで必要な実装は完了。
+
+Railsサーバー/Redisサーバー/Railsコンソール/Redisクライアンの4つを起動する。
+
+Railsコンソールもしくは、ブラウザでhttp://localhost:3000/redis/testにアクセスする。
+
+```ruby
+irb(main):006:0* app.get "http://localhost:3000/redis/test"
+Started GET "/redis/test" for 127.0.0.1 at 2019-05-27 19:13:52 +0900
+DEPRECATION WARNING: Using a dynamic :controller segment in a route is deprecated and will be removed in Rails 6.0. (called from block in <main> at /Users/NRintaro/Documents/Program/environment/Private/RubyOnRails/redis_sample_app/config/routes.rb:3)
+DEPRECATION WARNING: Using a dynamic :action segment in a route is deprecated and will be removed in Rails 6.0. (called from block in <main> at /Users/NRintaro/Documents/Program/environment/Private/RubyOnRails/redis_sample_app/config/routes.rb:3)
+Processing by RedisController#test as HTML
+  Rendering text template
+  Rendered text template (0.0ms)
+Completed 200 OK in 6ms (Views: 3.3ms | ActiveRecord: 0.0ms)
+
+
+=> 200
+```
+
+最後にRedisクライアントでセッションが保存されているかを確認する。
+
+```
+127.0.0.1:6379> keys *
+1) "7f5ee899f397b0f2c065209700770e7b"
+2) "hoge"
+```
+
+きちんと保存されてたのでOK。今回はここまで！

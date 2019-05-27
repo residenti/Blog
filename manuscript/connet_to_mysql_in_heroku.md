@@ -1,19 +1,19 @@
 # HerokuのMySQLに接続する
-post: 2019/05/02, update: 2019/05/02
 
 herokuのMySQLに接続するために必要となる情報を取得する。
 
 ```bashrc
 $ heroku config | grep CLEARDB_DATABASE_URL
+
 CLEARDB_DATABASE_URL:
-mysql://HOGE:FUGA@FUGA.cleardb.net/heroku_PIYO?reconnect=true
+mysql://AAAAAAAAAAAAAA:BBBBBBBB@us-cdbr-iron-east-02.cleardb.net/heroku_CCCCCCCCCCCCCCC?reconnect=true
 ```
 
 上記の情報を元にMySQLへ接続する。
 
 ```bashrc
-$ mysql -u  HOGE -h FUGA.cleardb.net heroku_PIYO -p
-Enter password: FUGA
+$ mysql -u AAAAAAAAAAAAA -h us-cdbr-east-05.cleardb.net heroku_CCCCCCCCCCC -p
+Enter password: BBBBBBBB
 ```
 
 毎度忘れちゃうのでメモしといた。

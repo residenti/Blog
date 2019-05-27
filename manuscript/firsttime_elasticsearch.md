@@ -1,8 +1,13 @@
-# はじめてのElastic Search
+# はじめてのElasticsearch
 
-## Elastic Searchの概要
+## 参考サイト
 
-[Elastic Search](https://www.elastic.co/jp/products/elasticsearch)はElastic社が開発しているOSSの全文検索エンジン(\*1)で、検索エンジン界隈では1番の人気を誇る。
+- [初心者のためのElasticsearchその1](https://dev.classmethod.jp/etc/es-01/)
+- [はじめてのElasticsearch](https://qiita.com/nskydiving/items/1c2dc4e0b9c98d164329)
+
+## Elasticsearchの概要
+
+[Elasticsearch](https://www.elastic.co/jp/products/elasticsearch)はElastic社が開発しているOSSの全文検索エンジン(\*1)で、検索エンジン界隈では1番の人気を誇る。
 内部では[Apache Lucene(アパッチ ルシーン)](https://ja.wikipedia.org/wiki/Apache_Lucene)が提供する超高速全文検索をフル活用していて、スケーラブル，スキーマレス，マルチテナントを特長としている。
 RESTでアクセスができ、最近SQLも使えるようになったらしい。
 
@@ -20,20 +25,27 @@ RESTでアクセスができ、最近SQLも使えるようになったらしい�
 
 ## 使ってみる
 
-今回はKibanaと組み合わせてElastic Searchを簡単に使ってみる。
+今回はKibanaと組み合わせてElasticsearchを簡単に使ってみる。
+
 KibanaはElasticsearchのデータを分析/可視化するツール。
+
+Elasticsearch自体はRESTfulインターフェイスで操作できるらしいが、kibanaとの組み合わせで説明されている参考サイト多く情報に困らなそうだったのでここでもこの組み合わせで使ってみることにした。
 
 ### 環境
 
 - OS: macOS Mojave 10.14.4
+- Elasticsearch: 7.1.0
+- Kibana: 7.1.0
+- wget: stable 1.20.3 (bottled)
 - Homebrew: 2.1.3
   - Homebrew/homebrew-core (git revision fd1ef4; last commit 2019-05-25)
   - Homebrew/homebrew-cask (git revision 16d50; last commit 2019-05-26)
-- elasticsearch: stable 6.8.0, HEAD
 
 ### インストール
 
-さっそくElastic Searchをインストールしようとしたところエラー、どうやらJava1.8が必須らしい。
+*追記*・・・初めにHomebrewでElasticsearchとkibanaをインストールしてみたものの、kibanaのv.7.1.0を動作させるのに必要なv.7.1.0のElasticsearchをインストールすることができず、正常に動作できなかったため途中で飽きられめて`wget`コマンドでzipファイルをダウンロードしてという方法に変えた。
+
+さっそくElasticsearchをインストールしようとしたところエラー、どうやらJava1.8が必須らしい。
 ```
 $ brew install elasticsearch
 elasticsearch: Java 1.8 is required to install this formula.
@@ -69,7 +81,7 @@ installer: The install was successful.
 🍺  adoptopenjdk8 was successfully installed!
 ```
 
-Elastic Searchをインストールする。
+Elasticsearchをインストールする。
 
 ```
 $ brew install elasticsearch
@@ -122,6 +134,7 @@ build_error: 0 (30 days)
 ```
 
 info見ると`/usr/local/Cellar/elasticsearch/6.8.0/bin`配下に`elasticsearch`コマンドがあるので、次のコマンドで起動する。
+
 毎度フルパスを指定するのが面倒だったので、後で`bash_profile`にパスを通した。
 
 ```
@@ -131,6 +144,7 @@ OpenJDK 64-Bit Server VM warning: Cannot open file logs/gc.log due to No such fi
 ```
 
 警告出てるけど一旦スルー(調べても良くわからなかったので)して、動作確認のため9200番ポートに接続する。
+
 デフォルトが9200番ポートらしい。ちゃんと値が返却されたので大丈夫そう。
 
 ```
@@ -154,8 +168,7 @@ $ curl http://localhost:9200/
 }
 ```
 
-`elasticsearch`コマンドがインストールできたので、次にKibanaを[ダウンロード](https://www.elastic.co/jp/downloads/kibana)して起動する。
-バージョン7.1.0をインストールした。
+`elasticsearch`コマンドがインストールできたので、次にKibanaを[ダウンロード](https://www.elastic.co/jp/downloads/kibana)して起動する。バージョン7.1.0をインストールした。
 
 ```
 $ cd path_to_kibana-dir
@@ -165,16 +178,22 @@ $ ./bin/kibana
 log   [10:21:30.117] [error][status][plugin:xpack_main@7.1.0] Status changed from yellow to red - This version of Kibana requires Elasticsearch v7.1.0 on all nodes. I found the following incompatible nodes in your cluster: v6.8.0 @ 127.0.0.1:9200 (127.0.0.1)
 ```
 
-どうやらバージョンが7.1.0のElasticsearchが必要らしかったので、`brew`でこのバージョンのElasticsearchをインストールしようと試みたがうまくいかずハマりそうだったので、`brew`を止めて`wget`でzipをダウンロードして`tar`で解凍して使うようにした。
+どうやらバージョン7.1.0のElasticsearchが必要らしく、HomebrewでこのバージョンのElasticsearchをインストールしようと試みたが、調査に時間が掛かりそうだったので`wget`コマンドでzipファイルをダウンロードして展開する方法にした。
 
-まずは`brew`でインストールしたElasticsearchをアンインストールしとく。
+まずは先ほどHomebrewでインストールしたElasticsearchをアンインストールしとく。
 
 ```
 $ brew uninstall elasticsearch
 Uninstalling /usr/local/Cellar/elasticsearch/6.8.0... (133 files, 103.1MB)
 ```
 
-elasticsearchの7.0.0をインストール。
+elasticsearch がアンインストールされたことを確認する。
+
+```
+$ brew list | fzf
+```
+
+Elasticsearchの7.0.0をインストールする。
 
 ```
 $ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.0.0-darwin-x86_64.tar.gz
@@ -192,7 +211,7 @@ elasticsearch-7.0.0-darwin-x86_64.tar.gz     100%[==============================
 $ tar -xzf elasticsearch-7.0.0-darwin-x86_64.tar.gz
 ```
 
-日本語検索プラグインkuromojiもインストールする。
+日本語検索プラグイン`kuromoji`もインストールしておく。
 
 ```
 $ cd elasticsearch-7.0.0
@@ -207,14 +226,14 @@ WARNING: All illegal access operations will be denied in a future release
 -> Installed analysis-kuromoji
 ```
 
-elasticsearchを起動する。
+Elasticsearchを起動する。
 
 ```
 $ bin/elasticsearch
 {大量のログ}
 ```
 
-動作確認でhttp://localhost:9200/へ接続する。
+http://localhost:9200/へ接続し動作確認をする。
 
 ```
 $ curl http://localhost:9200/
@@ -237,7 +256,7 @@ $ curl http://localhost:9200/
 }
 ```
 
-kibanaの7.0.0をインストール。
+kibanaの7.0.0をインストールする。
 
 ```
 $ wget https://artifacts.elastic.co/downloads/kibana/kibana-7.0.0-darwin-x86_64.tar.gz
@@ -255,10 +274,142 @@ kibana-7.0.0-darwin-x86_64.tar.gz            100%[==============================
 $ tar -xzf kibana-7.0.0-darwin-x86_64.tar.gz
 ```
 
-elasticsearchを起動する。
+kibanaを起動する。
 
 ```
 $ bin/kibana
 ```
 
-ブラウザからhttp://localhost:5601/へ接続し、kibanaの管理画面が表示されたので大丈夫そう。
+ブラウザからhttp://localhost:5601/へ接続し、kibanaの管理画面が表示されることを確認する。
+
+これで必要なものは一通りインストールできたはず。
+
+### 用語
+
+Elasticsearchを使う上で最低限必要であろう用語の一覧表。
+
+リレーショナルデータベースとは異なる用語が使われているが、概ね下記のように理解しておけば問題なさそう。
+
+| Elasticsearch | リレーショナルデータベース |
+|:--------------|:-------------- |
+| Index    | データベース |
+| Type     | テーブル |
+| Field | カラム |
+| Document | レコード |
+
+また、バージョン6以降では「Type」の指定が**非推奨**となり、代わりに「\_doc」を指定するようになったらしい。
+
+### ドキュメントを作成する
+
+`PUT /インデックス/タイプ/ドキュメントID { ドキュメントの中身(JSON) }`
+
+コマンド
+
+```
+PUT /library/_doc/1
+{
+  "title": "Norwegian Wood",
+  "name": {
+    "first": "Haruki",
+    "last": "Murakami"
+  },
+  "publish_date": "1987-09-04T00:00:00+0900",
+  "price": 19.95
+}
+```
+
+実行結果
+
+```
+{
+  "_index" : "library",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+```
+
+### ドキュメントを取得する
+
+`GET /インデックス/タイプ/ドキュメントID`
+
+コマンド
+
+```
+GET /library/_doc/1
+```
+
+実行結果
+
+```
+{
+  "_index" : "library",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "_seq_no" : 0,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "title" : "Norwegian Wood",
+    "name" : {
+      "first" : "Haruki",
+      "last" : "Murakami"
+    },
+    "publish_date" : "1987-09-04T00:00:00+0900",
+    "price" : 19.95
+  }
+}
+```
+
+### ドキュメントを作成する(IDを指定せず)
+
+> ドキュメントIDを指定せずにドキュメントを作成すると、自動的にドキュメントIDが割り当てられます。自動的に割り当てられたドキュメントIDは実行結果で確認できます。
+
+`PUT /インデックス/タイプ/ { ドキュメントの中身(JSON) }`
+
+コマンド
+
+```
+POST /library/_doc/
+{
+  "title": "Kafka on the Shore",
+  "name": {
+    "first": "Haruki",
+    "last": "Murakami"
+  },
+  "publish_date": "2002-09-12T00:00:00+0900",
+  "price": 19.95
+}
+```
+
+実行結果
+
+```
+{
+  "_index" : "library",
+  "_type" : "_doc",
+  "_id" : "Ue9V92oBDcKqrXzCR9rm",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 1,
+  "_primary_term" : 1
+}
+```
+
+自動で振られるidの値は数字じゃなくて、ランダムな文字列なんだ。へぇ。
+
+検索する時は、`GET /library/_doc/Ue9V92oBDcKqrXzCR9rm`このように自動で割り振られたidを指定してあげればOK。

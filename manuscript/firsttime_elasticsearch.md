@@ -2,8 +2,9 @@
 
 ## 参考サイト
 
-- [初心者のためのElasticsearchその1](https://dev.classmethod.jp/etc/es-01/)
-- [はじめてのElasticsearch](https://qiita.com/nskydiving/items/1c2dc4e0b9c98d164329)
+
+・[初心者のためのElasticsearchその1](https://dev.classmethod.jp/etc/es-01/)
+・[はじめてのElasticsearch](https://qiita.com/nskydiving/items/1c2dc4e0b9c98d164329)
 
 ## Elasticsearchの概要
 
@@ -33,13 +34,13 @@ Elasticsearch自体はRESTfulインターフェイスで操作できるらしい
 
 ### 環境
 
-- OS: macOS Mojave 10.14.4
-- Elasticsearch: 7.1.0
-- Kibana: 7.1.0
-- wget: stable 1.20.3 (bottled)
-- Homebrew: 2.1.3
-  - Homebrew/homebrew-core (git revision fd1ef4; last commit 2019-05-25)
-  - Homebrew/homebrew-cask (git revision 16d50; last commit 2019-05-26)
+・OS: macOS Mojave 10.14.4
+・Elasticsearch: 7.1.0
+・Kibana: 7.1.0
+・wget: stable 1.20.3 (bottled)
+・Homebrew: 2.1.3
+ ・Homebrew/homebrew-core (git revision fd1ef4; last commit 2019-05-25)
+ ・Homebrew/homebrew-cask (git revision 16d50; last commit 2019-05-26)
 
 ### インストール
 
@@ -78,7 +79,7 @@ Password:
 installer: Package name is AdoptOpenJDK
 installer: Installing at base path /
 installer: The install was successful.
-🍺  adoptopenjdk8 was successfully installed!
+adoptopenjdk8 was successfully installed!
 ```
 
 Elasticsearchをインストールする。
@@ -99,7 +100,7 @@ To have launchd start elasticsearch now and restart at login:
 Or, if you don't want/need a background service you can just run:
   elasticsearch
 ==> Summary
-🍺  /usr/local/Cellar/elasticsearch/6.8.0: 133 files, 103.1MB, built in 36 seconds
+/usr/local/Cellar/elasticsearch/6.8.0: 133 files, 103.1MB, built in 36 seconds
 ```
 
 `brew info`でインストールできたかと情報をざっと確認する。

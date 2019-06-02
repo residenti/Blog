@@ -12,3 +12,6 @@
 - 書籍
   - Clean Architecture　達人に学ぶソフトウェアの構造と設計
   - Amazon Web Services 基礎からのネットワーク構築
+- 抑えておきたい技術
+  - CircleCI
+  - Docker

@@ -153,6 +153,8 @@ OK
 
 まずはサンプル用のRailsアプリを作成する。
 
+今回作成したサンプルアプリは[これ](https://github.com/residenti/redis_sample_app)。
+
 ```
 $ mkdir redis_sample_app
 $ cd redis_sample_app

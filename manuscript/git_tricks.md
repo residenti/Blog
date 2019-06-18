@@ -2,11 +2,11 @@
 
 地味に使う小技を載せていく。
 
-## 複数行のコミットコメントを付与する
+## 1. 複数行のコミットコメントを付与する
 
 これは2通りのやり方がある。
 
-### 1. -F- オプションとヒアドキュメントを組み合わせる
+### -F- オプションとヒアドキュメントを組み合わせる
 
 ```
 $ git commit -F- <<EOM
@@ -16,13 +16,13 @@ $ git commit -F- <<EOM
 > EOM
 ```
 
-### 2. -m オプションを複数付ける
+### -m オプションを複数付ける
 
 ```
 $ git commit -m "コメント1行目" -m "コメント2行目" -m "コメント3行目"
 ```
 
-## 特定のgitリポジトリでuserとemailを変える
+## 2. 特定のgitリポジトリでuserとemailを変える
 
 ```
 $ git config --local user.name 名前
@@ -39,4 +39,10 @@ $ git config --local user.email メールアドレス
 [user]
 name = userName
 email = sample@gmail.com
+```
+
+## 3. ファイルを指定してstashする
+
+```
+$ git stash -- path_to_file
 ```

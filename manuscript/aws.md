@@ -26,6 +26,62 @@
 ・[AWSを使い始めて2日目に無料枠限度アラームがきた話](https://qiita.com/Ki2neudon/items/aefaa9edb435b4945c3a)
 ・[【AWS EC2 エラー】ssh port 22 Operation timed out](https://qiita.com/yokoto/items/338bd80262d9eefb152e)
 
+## 一時的なタイトル
+
+### SSHで接続する
+
+インスタンスにインターネット側からアクセスするには、事前にインスタンスの「パブリックIPアドレス」を調べておく。
+次に下記のコマンドを実行しインスタンスにSSHで接続する。
+
+```
+$ ssh -i my-key.pem ec2-user@{パブリックIPアドレス}
+```
+
+-i オプションでキーペアファイルを指定している。
+初回の接続に限り色々聞かれる。「対応したエラー > 1. ssh: connect to host x.xxx.xxx.xxx port 22: Operation timed out」を参考に。
+
+### Apachを起動/自動起動させる
+
+`service`コマンドを使い指定したコマンドを「起動(start)」する。
+
+```
+$ sudo service httpd start
+```
+
+他にも「停止(stop)」「再起動(restart)」「状態確認(status)」とか。
+
+これでApachが起動するがサーバーを再起動するとまた停止してしまうので、サーバーの起動に合わせてApachも起動するようにする。
+
+```
+$ sudo chkconfig httpd on
+```
+
+正しく設定されたかは次のコマンドで確認できる。
+
+```
+$ sudo chkconfig --list httpd
+httpd          0:off	1:off	2:on	3:on	4:on	5:on	6:off
+```
+
+0~6はランレベルと呼ばれるLinuxの概念で、カーネルがどのような状態であるかを表す用語。
+
+0 : シャットダウンに向かう状態
+1 : シングルユーザモード
+2 : 使用されない
+3 : 標準的な状態
+4 : 使用されない
+5 : GUIでログインする状態
+6 : 再起動に向かう状態
+
+一般的に自動起動を設定する必要があるのは3と5らしい。
+
+ランレベルを指定してonまたはoffに設定した時は次のようになる。
+
+```
+# ランレベル3と5をonに設定する.
+chkconfig --level 35 httpd on
+```
+
 ## 対応したエラー
 
 ### 1. ssh: connect to host x.xxx.xxx.xxx port 22: Operation timed out

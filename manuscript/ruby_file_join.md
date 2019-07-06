@@ -1,6 +1,4 @@
-# [Ruby] URLを結合するときは File.join を使う
-
-[参考サイト](https://qiita.com/ryonext/items/0bfd2592d713211bbc2f)
+# [Ruby] urlを結合するときは file.join を使う
 
 URLを結合する処理でバグを出しそうになったので、自戒としてまとめとく。
 結論書いちゃうと、表題の通りURLを結合する時は、File.join を使うと良いよとう記事。
@@ -45,3 +43,6 @@ File.join("https://sample.co.jp", "users")
 File.join("https://sample.co.jp/", "/users")
 => "https://sample.co.jp/users"
 ```
+## 参考サイト
+
+- [RubyでURLの結合をするときは`File.join`使うと幸せになった](https://qiita.com/ryonext/items/0bfd2592d713211bbc2f)

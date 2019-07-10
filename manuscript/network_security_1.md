@@ -46,3 +46,9 @@
 |第1層 |物理層 |rs-232, 無線, 光ケーブルなど |
 
 詳細は[こちら](http://www.asahi-net.or.jp/~ax2s-kmtn/ref/standard_org.html)を参照。
+
+### 標準化プロトコルの策定団体
+
+ISO(International Organization for Standardlization)・・・国際標準化機構。OSI基本参照モデルを策定。
+IFTF(Internet Engineering Task Force)・・・インターネット(主にネットワーク層より上の層のプロトコル)標準化を策定する組織。[RFC(Request for Comments)](https://tools.ietf.org/rfc/)という文章を発行。
+IEEE(The Institute of Electrical and Electronics Engineers, Inc.)・・・主にデータリンク層、物理層の標準化を策定。

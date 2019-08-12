@@ -1,6 +1,6 @@
 # Railsアプリケーションでメールを送信する
 
-気付けば久方ぶりのブログ更新になります。
+気付けば久方ぶりのブログ更新です。
 今回は最近開発している[APIサービス](https://github.com/residenti/lalalalunch-api)で、アカウント登録完了時にアクセストークンをメールで送信する機能を実装したので、そのメモです。
 
 ## Action Mailer
@@ -117,8 +117,48 @@ end
 利用期限はマイページからご確認ください。
 ```
 
-HTML形式のメールに加え、テキスト形式のメールも作成しておくことで、[multipart/alternative形式](http://fuji3.main.jp/common/tips/mail_m_p.html)のメールを自動生成します。
-これは、mailerメソッドが呼び出されると、2種類のテンプレートが存在するかをチェックして行ってくれる。
+HTML形式のメールに加え、テキスト形式のメールも作成しておくことで、mailerメソッドが2種類のテンプレートがあるか確認し[multipart/alternative形式](http://fuji3.main.jp/common/tips/mail_m_p.html)のメールを自動生成してくれる。
 
-## メールの設定をする
 ## メールを送信する
+
+定義したメイラーを呼び出してメールを送信します。
+
+```ruby
+class Users::ConfirmationsController < Devise::ConfirmationsController
+
+  ~省略~
+
+  def after_confirmation_path_for(resource_name, resource)
+    ConfirmationMailer.with(user: resource).registration_completed.deliver_later
+    super(resource_name, resource)
+  end
+end
+```
+
+`with`で渡した値はメイラーアクション側でparams[:user]のような形で受け取ることができます。
+
+## プレビュー確認する
+
+Action Mailerにはプレビュー機能があり、レンダリング用のURLを開くことでメールの外観を確認することができます。
+対象ファイルやメイラー自身に何らかの変更を加えると自動的に再読み込みしてレンダリングされるので、スタイル変更を画面ですぐ確認できます。
+registration_completedのプレビューを確認するには、`test/mailers/previews/confirmation_mailer_preview.rb`で同じ名前のメソッドを呼び出します。
+＊confirmation_mailer_preview.rb はメイラーと同時に生成されています。
+
+```ruby
+# test/mailers/previews/confirmation_mailer_preview.rb
+
+# Preview all emails at http://localhost:3000/rails/mailers/confirmation_mailer
+class ConfirmationMailerPreview < ActionMailer::Preview
+  def registration_completed
+    ConfirmationMailer.with(user: User.first).registration_completed
+  end
+end
+```
+
+registration_completedのプレビューを表示するには、同じ名前のメソッドを定義し、その中でConfirmationMailer.registration_completedを呼び出します。
+http://localhost:3000/rails/mailers/confirmation_mailerにアクセスしてプレビューが確認できます。
+また、利用可能なプレビューはhttp://localhost:3000/rails/mailersに一覧で表示されます。
+
+## 参考サイト
+
+- [Rasil Guide | Action Mailer の基礎](https://railsguides.jp/action_mailer_basics.html)

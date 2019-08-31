@@ -136,3 +136,38 @@ $ chmod 400 my-key.pem
 $ ls -la my-key.pem
 -r--------@ 1 residenti  staff  1692  6  9 19:38 my-key.pem
 ```
+
+### 2. Your server is running PHP version 5.4.45 but WordPress 5.2.2 requires at least 5.6.20.
+
+[こちら](https://homepage-reborn.com/2019/01/22/2019%E5%B9%B44%E6%9C%88%E3%81%8B%E3%82%89wordpress%E3%81%AEphp%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%81%AF5-6%E4%BB%A5%E4%B8%8A%E3%81%8C%E5%BF%85%E8%A6%81%E3%81%AB%E3%81%AA%E3%82%8B%E3%82%88/)の記事に書かれている通り、2019年4月からWordPressのphpバージョンは5.6以上が必要になった模様。
+
+Amazon Linuxにphp7.3系をインストールする手順をまとめとく。
+まずは、すでにインストールしてしまった古いバージョンのphp(また周辺のパッケージ)をアンインストールするし、yum自体をアップデートする。
+```
+$ sudo yum -y remove php-*
+$ sudo yum -y update
+```
+
+今回yumリポジトリでは管理されていない新しいバージョンのパッケージをインストールしたいので、remiリポジトリ追加する。
+＊remiリポジトリがAmazon Linux（Amazon Linux AMI release 2016.09）ではデフォルトでインストールされていなかった。
+```
+sudo yum install -y https://rpms.remirepo.net/enterprise/remi-release-6.rpm
+```
+/etc/yum.repos.d/remi.repoというファイルが生成されている。詳しくは[参考サイト](https://qiita.com/yamaguchi_takashi/items/d4b7b2693b42679dc3ae#%E5%90%84%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E3%82%A2%E3%83%83%E3%83%97%E3%83%87%E3%83%BC%E3%83%88)を参照。
+
+各リポジトリをアップデートする。
+```
+sudo yum -y update --enablerepo=epel,remi,remi-php73
+```
+
+php7.3系とその他に必要なパッケージをインストールする。
+```
+$ sudo yum -y install  --disablerepo=amzn-main --enablerepo=remi-php73 php php-mysql php-mbstring
+
+$ php -v
+PHP 7.3.9 (cli) (built: Aug 28 2019 12:08:07) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.3.9, Copyright (c) 1998-2018 Zend Technologies
+```
+
+[参考サイト](https://qiita.com/yamaguchi_takashi/items/d4b7b2693b42679dc3ae#%E5%90%84%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E3%82%A2%E3%83%83%E3%83%97%E3%83%87%E3%83%BC%E3%83%88)

@@ -1,7 +1,7 @@
 # スマートコントラクト開発環境の構築
 
 ## Gethのインストール
-GethとはEthereum（イーサリアム）が提供しているクライアントソフトで、Go Ethereumの略称です。
+GethとはEthereum（イーサリアム）が提供しているクライアントソフトで、Go Ethereumの略称。
 できること
 - マイニング
 - 資金移動
@@ -185,6 +185,11 @@ true
 ```
 
 ## gethコンソールでよく使うコマンド
+
+以降で登場する「`eth`, `personal`, `miner`」から始まるコマンドは、web3というオプジェクトに含まれるもので、省略しないで書くと「`Web3.eth`, `Web3.personal`, `Web3.miner`」となる。
+また、web3が持つオブジェクトや関数はgethコンソール上で「web3」と入力すると確認できる。
+
+[https://github.com/ethereum/go-ethereum/wiki](https://github.com/ethereum/go-ethereum/wiki)
 
 ### genesisブロックの内容を確認する
 
@@ -378,4 +383,21 @@ null # nullが返ってくるのは、まだブロックに取り込まれてい
 5
 > web3.fromWei(eth.getBalance(eth.accounts[2], 490), "ether")
 0
+```
+
+### 文字列変換
+
+上から「16進数の文字列 => ASCIIの文字列」、「16進数の文字列 => UTF8の文字列」へと変換している。
+```
+> web3.toAscii("0x68696d69747573")
+"himitus"
+> web3.toUtf8("0xe382a4e383bce382b5e383aae382a2e383a0")
+"イーサリアム"
+```
+
+### マイニングを終了する
+
+```
+> miner.stop()
+true
 ```

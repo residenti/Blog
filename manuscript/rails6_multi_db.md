@@ -87,6 +87,23 @@ end
 
 その他、マルチDBにしたことでrailsのdb関連のコマンドの使用方法も変わってくるので注意が必要。その辺の細かいとこはRailsガイドを参考。
 
+## schema.rbが最新化されない!?
+
+マルチDBを導入して初めて、マイグレーションファイルを実行した。
+`$ rails db:migrate:primary`
+＊マルチDBにしているため、適用するDBを指定している。
+
+実行後、DBを確認するとちゃんとマイグレーション情報が適用されていた。
+しかし、困ったことにprimary_schema.rb(schema.rb)が最新化されていない。versionが以前のまま。。。
+調べたところ、[公式サイト](https://railsguides.jp/active_record_migrations.html)に記載が有った。
+>db:migrateタスクを実行すると、db:schema:dumpコマンドも同時に呼び出される点にご注意ください。このコマンドはdb/schema.rbスキーマファイルを更新し、スキーマがデータベースの構造に一致するようにします。
+
+とのことだったので、`rails db:schema:dump`を実行してみた。
+すると、無事にprimary_schema.rbが最新のバージョンに更新された。
+
+本来、migrateコマンドを実行すると、dumpコマンドも実行されるはずなんだけど、今回はされなかった。マルチDBだからなんかあるのかな。
+
 ## 参考サイト
 - [Rails ガイド | Active Record で複数のデータベース利用](https://railsguides.jp/active_record_multiple_databases.html#%E3%82%B3%E3%83%8D%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E8%87%AA%E5%8B%95%E5%88%87%E3%82%8A%E6%9B%BF%E3%81%88%E3%82%92%E6%9C%89%E5%8A%B9%E3%81%AB%E3%81%99%E3%82%8B)
+- [Rails ガイド | Active Record マイグレーション](https://railsguides.jp/active_record_migrations.html)
 - [Rails 6でマルチDBの設定を実運用に乗せてみました](https://tech.ga-tech.co.jp/entry/2019/06/rails-multi-db)

@@ -1,13 +1,15 @@
 default: &default
   adapter: mysql2
-  encoding: utf8
+  encoding: utf8mb4
+  charset: utf8mb4
+  collation: utf8mb4_bin
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
 development:
   <<: *default
   database: blog_app_development
-  username: root
+  username: rintaro
   password: rintaro123
   host: localhost
   socket: '/tmp/mysql.sock'
@@ -18,7 +20,7 @@ development:
 test:
   <<: *default
   database: blog_app_test
-  username: root
+  username: rintaro
   password: rintaro123
   host: localhost
   socket: '/tmp/mysql.sock'

@@ -43,10 +43,12 @@ gem 'rouge'
 gem 'mysql2'
 
 # Flexible authentication solution for Rails with Warden.
-gem 'devise'
+gem "devise", ">= 4.7.1"
 
 # A Ruby gem to load environment variables from `.env`.
 gem 'dotenv-rails'
+# Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser.
+gem "nokogiri", ">= 1.10.4"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

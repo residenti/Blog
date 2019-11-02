@@ -239,11 +239,12 @@ DEPENDENCIES
   capybara
   chromedriver-helper
   coffee-rails
-  devise
+  devise (>= 4.7.1)
   dotenv-rails
   jbuilder
   listen
   mysql2
+  nokogiri (>= 1.10.4)
   puma
   rails (= 6.0.0)
   rails_12factor

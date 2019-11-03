@@ -260,5 +260,8 @@ DEPENDENCIES
   web-console
   webpacker
 
+RUBY VERSION
+   ruby 2.6.3p62
+
 BUNDLED WITH
    2.0.1

@@ -1,4 +1,4 @@
-# ざっくり Cookie と Session
+# [リテラシー] ざっくり Cookie と Session
 お互いの関係を整理するために書き出す。
 
 ## Cookie
